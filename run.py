@@ -27,4 +27,4 @@ if __name__ == '__main__':
     print(f" Debug Mode  : {debug_mode}")
     print("=" * 65 + "\n")
 
-    app.run(host='127.0.0.1', port=port, debug=debug_mode)
+    app.run(host='0.0.0.0', port=port, debug=debug_mode, use_reloader=False)
