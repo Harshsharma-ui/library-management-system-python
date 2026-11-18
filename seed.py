@@ -39,9 +39,9 @@ def seed_database(target_app=None):
             student_user = User(
                 username='cyber_student',
                 email='student@granthify.edu',
-                full_name='Harsh Kumar',
+                full_name='Alex Mercer',
                 roll_number='23CYBER042',
-                phone='+91 9876543210',
+                phone=None,
                 role='student',
                 is_active=True
             )
@@ -52,14 +52,14 @@ def seed_database(target_app=None):
             print("[*] Demo student account already exists.")
 
         # Second Demo Student
-        student_user2 = User.query.filter_by(username='rahul_sharma').first()
+        student_user2 = User.query.filter_by(username='rohan_verma').first()
         if not student_user2:
             student_user2 = User(
-                username='rahul_sharma',
-                email='rahul@granthify.edu',
-                full_name='Rahul Sharma',
+                username='rohan_verma',
+                email='rohan@granthify.edu',
+                full_name='Rohan Verma',
                 roll_number='23CYBER018',
-                phone='+91 9123456780',
+                phone=None,
                 role='student',
                 is_active=True
             )

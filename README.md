@@ -373,7 +373,7 @@ http://127.0.0.1:5000
 | :--- | :--- | :--- | :--- |
 | **Administrator** | `admin` | `AdminPassword123!` | Full administrative control, circulation desk, logs |
 | **Student (Demo 1)** | `cyber_student` | `StudentPass123!` | Sample student with 1 active loan and 1 pending request |
-| **Student (Demo 2)** | `rahul_sharma` | `StudentPass123!` | Clean student account for new borrowing tests |
+| **Student (Demo 2)** | `rohan_verma` | `StudentPass123!` | Clean student account for new borrowing tests |
 
 ---
 

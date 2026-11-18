@@ -20,7 +20,7 @@
                 <div class="row g-3">
                     <div class="col-md-6">
                         <label for="username" class="form-label fw-semibold">Username *</label>
-                        {{ form.username(class="form-control" + (" is-invalid" if form.username.errors else ""), placeholder="e.g. harsh_kumar", id="username") }}
+                        {{ form.username(class="form-control" + (" is-invalid" if form.username.errors else ""), placeholder="e.g. alex_mercer", id="username") }}
                         {% for error in form.username.errors %}
                             <div class="text-danger small mt-1">{{ error }}</div>
                         {% endfor %}
@@ -52,7 +52,7 @@
 
                     <div class="col-md-5">
                         <label for="phone" class="form-label fw-semibold">Contact Phone</label>
-                        {{ form.phone(class="form-control" + (" is-invalid" if form.phone.errors else ""), placeholder="+91 9876543210", id="phone") }}
+                        {{ form.phone(class="form-control" + (" is-invalid" if form.phone.errors else ""), placeholder="", id="phone") }}
                         {% for error in form.phone.errors %}
                             <div class="text-danger small mt-1">{{ error }}</div>
                         {% endfor %}
