@@ -4,14 +4,16 @@ Initializes SQLite schema, generates hashed administrator and student accounts,
 and populates academic textbooks across computer science and cybersecurity disciplines.
 """
 
+import os
 from datetime import date, timedelta
 from app import create_app, db
 from app.models import User, Book, IssueRecord, Fine, ActivityLog
 
-app = create_app('development')
 
-def seed_database():
-    with app.app_context():
+def seed_database(target_app=None):
+    """Seed baseline catalog and default accounts."""
+    app_instance = target_app or create_app(os.getenv('FLASK_ENV', 'development'))
+    with app_instance.app_context():
         print("[+] Initializing database schema...")
         db.create_all()
 

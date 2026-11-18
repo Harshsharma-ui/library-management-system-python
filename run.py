@@ -1,21 +1,29 @@
 """
-Granthify - Application Entry Point
-Initializes the Flask application instance and launches the development server.
+Granthify - Application Entry Point & WSGI Handler
+Initializes the Flask application instance and launches the server.
 """
 
 import os
 from app import create_app, db
 
 # Determine active environment configuration
-env_name = os.getenv('FLASK_ENV', 'development')
+env_name = os.getenv('FLASK_ENV', 'production' if os.getenv('VERCEL') else 'development')
 app = create_app(env_name)
 
-if __name__ == '__main__':
-    with app.app_context():
-        # Ensure database tables exist before starting
+# Ensure database tables exist and auto-seed when deploying to Vercel/serverless
+with app.app_context():
+    try:
         db.create_all()
+        # If running on Vercel and database is empty, auto-seed demo data
+        if os.getenv('VERCEL'):
+            from app.models import User
+            if User.query.count() == 0:
+                from seed import seed_database
+                seed_database(app)
+    except Exception as e:
+        print(f"[STARTUP NOTE] Database initialization: {e}")
 
-    # Launch server
+if __name__ == '__main__':
     port = int(os.getenv('PORT', 5000))
     debug_mode = app.config.get('DEBUG', True)
 

@@ -11,24 +11,24 @@ from app.models import User, Book, IssueRecord, Fine, ActivityLog, LoginAttempt
 
 
 @pytest.fixture
-def app():
+def test_app():
     """Create and configure a clean testing app instance."""
-    test_app = create_app('testing')
-    with test_app.app_context():
+    app_instance = create_app('testing')
+    with app_instance.app_context():
         db.create_all()
-        yield test_app
+        yield app_instance
         db.session.remove()
         db.drop_all()
 
 
 @pytest.fixture
-def client(app):
+def client(test_app):
     """Testing client."""
-    return app.test_client()
+    return test_app.test_client()
 
 
 @pytest.fixture
-def seed_test_users(app):
+def seed_test_users(test_app):
     """Seed test admin and test student accounts."""
     admin = User(
         username='test_admin',
@@ -59,7 +59,7 @@ def seed_test_users(app):
 # 1. Authentication & Bcrypt Hashing Tests
 # -------------------------------------------------------------
 
-def test_password_hashing(app):
+def test_password_hashing(test_app):
     """Verify that passwords are salted and hashed using bcrypt."""
     user = User(username='crypto_user', email='crypto@test.com', full_name='Crypto User', role='student')
     user.set_password('SecretP@ssword1')
@@ -70,7 +70,7 @@ def test_password_hashing(app):
     assert user.check_password('WrongPassword') is False
 
 
-def test_account_lockout(app):
+def test_account_lockout(test_app):
     """Verify that 5 failed attempts trigger an automatic temporary lockout."""
     user = User(username='brute_target', email='target@test.com', full_name='Target User', role='student')
     user.set_password('CorrectPass123!')
@@ -195,7 +195,7 @@ def test_book_issue_and_return_lifecycle(client, seed_test_users):
 # 4. Overdue Fine Calculation Test
 # -------------------------------------------------------------
 
-def test_overdue_fine_calculation(app, seed_test_users):
+def test_overdue_fine_calculation(test_app, seed_test_users):
     """Verify accurate fine calculation when a book is returned past its due date."""
     admin, student = seed_test_users
 

@@ -20,11 +20,14 @@ class Config:
     # Cryptographic Secret Key for sessions and CSRF protection
     SECRET_KEY = os.getenv('SECRET_KEY', 'default-dev-secret-key-change-in-production')
 
-    # Database Configuration
-    SQLALCHEMY_DATABASE_URI = os.getenv(
-        'DATABASE_URL',
-        f"sqlite:///{os.path.join(BASE_DIR, 'granthify.db')}"
-    )
+    # Database Configuration (On Vercel serverless, /tmp is the only writable directory)
+    if os.getenv('VERCEL'):
+        SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL', 'sqlite:////tmp/granthify.db')
+    else:
+        SQLALCHEMY_DATABASE_URI = os.getenv(
+            'DATABASE_URL',
+            f"sqlite:///{os.path.join(BASE_DIR, 'instance', 'granthify.db')}"
+        )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # Security: Session Cookie Hardening
