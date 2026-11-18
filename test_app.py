@@ -248,3 +248,60 @@ def test_sql_injection_resilience(client, seed_test_users):
         # Database tables must remain intact
         assert Book.query.count() >= 0
         assert User.query.count() == 2
+
+
+# -------------------------------------------------------------
+# 6. Vercel Serverless Routing & Path Fixer Verification
+# -------------------------------------------------------------
+
+def test_vercel_routing_and_subpages(test_app):
+    """Verify that VercelPathFixer accurately maps rewrite query parameters to subroutes."""
+    from io import BytesIO
+    from api.index import VercelPathFixer
+
+    handler = VercelPathFixer(test_app.wsgi_app)
+
+    def invoke(query_string):
+        status_box = []
+        def start_response(status, headers):
+            status_box.append(status)
+        env = {
+            'REQUEST_METHOD': 'GET',
+            'SCRIPT_NAME': '',
+            'PATH_INFO': '/api/index',
+            'QUERY_STRING': query_string,
+            'SERVER_NAME': 'test.vercel.app',
+            'SERVER_PORT': '443',
+            'HTTP_HOST': 'test.vercel.app',
+            'HTTP_X_FORWARDED_PROTO': 'https',
+            'wsgi.version': (1, 0),
+            'wsgi.url_scheme': 'https',
+            'wsgi.input': BytesIO(b''),
+            'wsgi.errors': BytesIO(),
+            'wsgi.multithread': False,
+            'wsgi.multiprocess': False,
+            'wsgi.run_once': False
+        }
+        body = b''.join(handler(env, start_response)).decode('utf-8')
+        return status_box[0], body
+
+    # 1. Root route
+    status, body = invoke('__vercel_path=')
+    assert status == '200 OK'
+    assert 'Granthify' in body
+
+    # 2. Login route (must NOT return home or 404)
+    status, body = invoke('__vercel_path=auth/login')
+    assert status == '200 OK'
+    assert 'Sign In' in body
+
+    # 3. Register route (must NOT return home or 404)
+    status, body = invoke('__vercel_path=auth/register')
+    assert status == '200 OK'
+    assert 'Student Registration' in body
+
+    # 4. Catalog route
+    status, body = invoke('__vercel_path=catalog')
+    assert status == '200 OK'
+    assert 'Book Catalog' in body
+
