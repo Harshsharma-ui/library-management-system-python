@@ -1,5 +1,5 @@
 """
-SecureLib - Main & Public Routes
+Granthify - Main & Public Routes
 Landing page, public catalog search, and error dispatchers.
 """
 

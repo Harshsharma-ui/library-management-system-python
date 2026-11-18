@@ -1,5 +1,5 @@
 """
-SecureLib - Utility Functions
+Granthify - Utility Functions
 Security helpers, IP detection, audit logging, and fine calculations.
 """
 

@@ -1,5 +1,5 @@
 """
-SecureLib - Application Factory & Extension Initialization
+Granthify - Application Factory & Extension Initialization
 Initializes Flask extensions, registers blueprints, and sets up custom error handlers.
 """
 

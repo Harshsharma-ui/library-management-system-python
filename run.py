@@ -1,5 +1,5 @@
 """
-SecureLib - Application Entry Point
+Granthify - Application Entry Point
 Initializes the Flask application instance and launches the development server.
 """
 
@@ -20,7 +20,7 @@ if __name__ == '__main__':
     debug_mode = app.config.get('DEBUG', True)
 
     print("\n" + "=" * 65)
-    print("   SECURELIB - CYBER SECURE LIBRARY MANAGEMENT SYSTEM")
+    print("   GRANTHIFY - CYBER SECURE LIBRARY MANAGEMENT SYSTEM")
     print("=" * 65)
     print(f" Environment : {env_name}")
     print(f" Server URL  : http://127.0.0.1:{port}")

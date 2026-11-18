@@ -1,5 +1,5 @@
 """
-SecureLib - Comprehensive Test Suite
+Granthify - Comprehensive Test Suite
 Validates authentication, bcrypt hashing, brute-force lockout, RBAC, book circulation,
 fine calculation, and SQL injection resilience.
 """

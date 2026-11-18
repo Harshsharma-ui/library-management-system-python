@@ -1,5 +1,5 @@
 """
-SecureLib - Database Models
+Granthify - Database Models
 Defines relational models with constraints, relationships, and security helpers.
 """
 

@@ -1,5 +1,5 @@
 """
-SecureLib - Admin Blueprint
+Granthify - Admin Blueprint
 Administrative controls: book inventory, student management, direct issues & approvals,
 returns, fine enforcement, and security audit log analysis.
 """

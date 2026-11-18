@@ -1,5 +1,5 @@
 """
-SecureLib - Database Seeding Script
+Granthify - Database Seeding Script
 Initializes SQLite schema, generates hashed administrator and student accounts,
 and populates academic textbooks across computer science and cybersecurity disciplines.
 """
@@ -20,7 +20,7 @@ def seed_database():
         if not admin_user:
             admin_user = User(
                 username='admin',
-                email='admin@securelib.edu',
+                email='admin@granthify.edu',
                 full_name='Security Administrator',
                 role='admin',
                 is_active=True
@@ -36,7 +36,7 @@ def seed_database():
         if not student_user:
             student_user = User(
                 username='cyber_student',
-                email='student@securelib.edu',
+                email='student@granthify.edu',
                 full_name='Harsh Kumar',
                 roll_number='23CYBER042',
                 phone='+91 9876543210',
@@ -54,7 +54,7 @@ def seed_database():
         if not student_user2:
             student_user2 = User(
                 username='rahul_sharma',
-                email='rahul@securelib.edu',
+                email='rahul@granthify.edu',
                 full_name='Rahul Sharma',
                 roll_number='23CYBER018',
                 phone='+91 9123456780',
@@ -220,7 +220,7 @@ def seed_database():
         db.session.commit()
         print("[+] Sample loan and reservation requests initialized successfully.")
         print("\n" + "=" * 60)
-        print("SECURELIB SYSTEM INITIALIZATION COMPLETE")
+        print("GRANTHIFY SYSTEM INITIALIZATION COMPLETE")
         print("=" * 60)
         print("Administrator Credentials:")
         print("  Username : admin")

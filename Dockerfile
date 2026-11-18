@@ -1,4 +1,4 @@
-# Dockerfile for SecureLib Web Application
+# Dockerfile for Granthify Web Application
 FROM python:3.12-slim
 
 # Prevent Python from writing .pyc files and enable unbuffered output

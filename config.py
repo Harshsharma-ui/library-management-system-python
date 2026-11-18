@@ -1,5 +1,5 @@
 """
-SecureLib - Configuration Module
+Granthify - Configuration Module
 Defines environment-based configuration settings with security hardening.
 """
 
@@ -23,7 +23,7 @@ class Config:
     # Database Configuration
     SQLALCHEMY_DATABASE_URI = os.getenv(
         'DATABASE_URL',
-        f"sqlite:///{os.path.join(BASE_DIR, 'securelib.db')}"
+        f"sqlite:///{os.path.join(BASE_DIR, 'granthify.db')}"
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 

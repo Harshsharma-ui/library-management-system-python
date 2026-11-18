@@ -1,5 +1,5 @@
 """
-SecureLib - Access Control Decorators
+Granthify - Access Control Decorators
 Enforces Role-Based Access Control (RBAC) and account status validation.
 """
 

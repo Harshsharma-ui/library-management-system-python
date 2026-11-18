@@ -1,5 +1,5 @@
 """
-SecureLib - WTForms Validation Forms
+Granthify - WTForms Validation Forms
 Provides strict input validation, length constraints, regex matching, and CSRF integration.
 """
 

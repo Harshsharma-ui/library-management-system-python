@@ -1,5 +1,5 @@
 /**
- * SecureLib - Frontend Client Script
+ * Granthify - Frontend Client Script
  * Handles flash alert dismissals, table search, and modal confirmations.
  */
 

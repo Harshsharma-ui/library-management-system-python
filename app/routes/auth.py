@@ -1,5 +1,5 @@
 """
-SecureLib - Authentication Blueprint
+Granthify - Authentication Blueprint
 Handles login, registration, session management, logout, and password updates
 with brute-force lockout, bcrypt hashing, and audit trails.
 """

@@ -1,5 +1,5 @@
 """
-SecureLib - Student Blueprint
+Granthify - Student Blueprint
 Student portal: personal dashboard, catalog search & filtering, book requests,
 active loans tracking, borrowing history, and fine status.
 """
