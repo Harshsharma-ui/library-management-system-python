@@ -1,0 +1,282 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - SecureLib{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Header with Quick Actions -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">Administrative Operations</h2>
+            <p class="text-muted small mb-0">System Overview & Cybersecurity Intelligence Control Center</p>
+        </div>
+        <div class="d-flex gap-2 mt-3 mt-md-0">
+            <a href="{{ url_for('admin.add_book') }}" class="btn btn-primary btn-sm">
+                <i class="bi bi-plus-circle me-1"></i> Add New Book
+            </a>
+            <a href="{{ url_for('admin.issue_return') }}" class="btn btn-outline-dark btn-sm">
+                <i class="bi bi-arrow-left-right me-1"></i> Issue / Return Desk
+            </a>
+            <a href="{{ url_for('admin.fines') }}" class="btn btn-outline-warning btn-sm">
+                <i class="bi bi-arrow-clockwise me-1"></i> Sync Fines
+            </a>
+        </div>
+    </div>
+
+    <!-- KPI Statistics Grid -->
+    <div class="row g-3 mb-4">
+        <!-- Total Books -->
+        <div class="col-sm-6 col-xl-3">
+            <div class="stat-card">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="stat-number">{{ total_books }}</div>
+                        <div class="stat-label">Total Books ({{ total_titles }} Titles)</div>
+                    </div>
+                    <div class="icon-box bg-primary bg-opacity-10 text-primary">
+                        <i class="bi bi-book-fill"></i>
+                    </div>
+                </div>
+                <div class="mt-2 text-muted small">
+                    <span class="text-success fw-semibold">{{ available_copies }}</span> copies currently available
+                </div>
+            </div>
+        </div>
+
+        <!-- Issued Books -->
+        <div class="col-sm-6 col-xl-3">
+            <div class="stat-card">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="stat-number">{{ issued_books_count }}</div>
+                        <div class="stat-label">Currently Issued</div>
+                    </div>
+                    <div class="icon-box bg-info bg-opacity-10 text-info">
+                        <i class="bi bi-journal-bookmark-fill"></i>
+                    </div>
+                </div>
+                <div class="mt-2 text-muted small">
+                    Active student loans
+                </div>
+            </div>
+        </div>
+
+        <!-- Overdue Books -->
+        <div class="col-sm-6 col-xl-3">
+            <div class="stat-card">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="stat-number {% if overdue_issues_count > 0 %}text-danger{% endif %}">{{ overdue_issues_count }}</div>
+                        <div class="stat-label">Overdue Books</div>
+                    </div>
+                    <div class="icon-box bg-danger bg-opacity-10 text-danger">
+                        <i class="bi bi-alarm-fill"></i>
+                    </div>
+                </div>
+                <div class="mt-2 text-muted small">
+                    Past loan due date
+                </div>
+            </div>
+        </div>
+
+        <!-- Pending Requests -->
+        <div class="col-sm-6 col-xl-3">
+            <div class="stat-card">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="stat-number text-warning">{{ pending_requests_count }}</div>
+                        <div class="stat-label">Pending Requests</div>
+                    </div>
+                    <div class="icon-box bg-warning bg-opacity-10 text-warning">
+                        <i class="bi bi-hourglass-split"></i>
+                    </div>
+                </div>
+                <div class="mt-2 text-muted small">
+                    <a href="{{ url_for('admin.issue_return') }}" class="text-decoration-none">Review and approve &rarr;</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Registered Students -->
+        <div class="col-sm-6 col-xl-3">
+            <div class="stat-card">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="stat-number">{{ total_students }}</div>
+                        <div class="stat-label">Registered Students</div>
+                    </div>
+                    <div class="icon-box bg-secondary bg-opacity-10 text-secondary">
+                        <i class="bi bi-mortarboard-fill"></i>
+                    </div>
+                </div>
+                <div class="mt-2 text-muted small">
+                    <a href="{{ url_for('admin.students') }}" class="text-decoration-none">Manage student accounts &rarr;</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Unpaid Fines -->
+        <div class="col-sm-6 col-xl-3">
+            <div class="stat-card">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="stat-number text-danger">₹{{ unpaid_fines_total }}</div>
+                        <div class="stat-label">Unpaid Fines</div>
+                    </div>
+                    <div class="icon-box bg-danger bg-opacity-10 text-danger">
+                        <i class="bi bi-cash-stack"></i>
+                    </div>
+                </div>
+                <div class="mt-2 text-muted small">
+                    Collected: <span class="text-success fw-semibold">₹{{ collected_fines_total }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Security Status -->
+        <div class="col-sm-12 col-xl-6">
+            <div class="stat-card bg-dark text-white border-0">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <span class="badge bg-success mb-2"><i class="bi bi-shield-check me-1"></i>Active Defense Shield</span>
+                        <h5 class="fw-bold text-white mb-1">Cybersecurity Controls Active</h5>
+                        <p class="text-light text-opacity-75 small mb-0">
+                            Bcrypt Hashing (12 rounds) &bull; RBAC Decorators &bull; CSRF Validation &bull; SQL Parameterization &bull; Brute-Force Lockout (5 attempts / 15m)
+                        </p>
+                    </div>
+                    <div class="text-info fs-1">
+                        <i class="bi bi-hdd-network-fill"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Active Overdue Loans Alert Table -->
+    {% if overdue_records %}
+        <div class="card border-danger shadow-sm mb-4">
+            <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0 fs-6 fw-bold"><i class="bi bi-exclamation-triangle-fill me-2"></i>Action Required: Overdue Loans</h5>
+                <span class="badge bg-white text-danger">{{ overdue_records|length }} Overdue</span>
+            </div>
+            <div class="table-responsive">
+                <table class="table custom-table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Book Title</th>
+                            <th>Student</th>
+                            <th>Roll Number</th>
+                            <th>Due Date</th>
+                            <th>Days Overdue</th>
+                            <th>Estimated Fine</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for record in overdue_records %}
+                            <tr>
+                                <td class="fw-semibold">{{ record.book.title }}</td>
+                                <td>{{ record.student.full_name }}</td>
+                                <td><span class="badge bg-light text-dark border">{{ record.student.roll_number }}</span></td>
+                                <td class="text-danger fw-semibold">{{ record.due_date.strftime('%d %b %Y') }}</td>
+                                <td><span class="badge bg-danger">{{ record.overdue_days }} days</span></td>
+                                <td class="fw-bold text-danger">₹{{ record.calculate_potential_fine() }}</td>
+                                <td>
+                                    <form method="POST" action="{{ url_for('admin.process_return', record_id=record.id) }}" class="d-inline">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                        <button type="submit" class="btn btn-sm btn-outline-success">
+                                            <i class="bi bi-box-arrow-in-down me-1"></i> Process Return
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Audit Logs & Login Attempts Grid -->
+    <div class="row g-4">
+        <!-- Security Audit Logs -->
+        <div class="col-lg-7">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fs-6 fw-bold text-dark"><i class="bi bi-shield-lock me-2 text-primary"></i>Recent Security Activity Logs</h5>
+                    <a href="{{ url_for('admin.activity_logs') }}" class="btn btn-outline-primary btn-sm">All Logs</a>
+                </div>
+                <div class="table-responsive">
+                    <table class="table custom-table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Timestamp</th>
+                                <th>Action</th>
+                                <th>User</th>
+                                <th>IP Address</th>
+                                <th>Details</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for log in recent_logs %}
+                                <tr>
+                                    <td class="small text-muted">{{ log.timestamp.strftime('%H:%M:%S (%d %b)') }}</td>
+                                    <td>
+                                        <span class="badge {% if 'FAIL' in log.action or 'LOCK' in log.action or 'DELETE' in log.action %}bg-danger{% elif 'SUCCESS' in log.action or 'APPROVED' in log.action %}bg-success{% else %}bg-primary{% endif %}">
+                                            {{ log.action }}
+                                        </span>
+                                    </td>
+                                    <td class="small fw-semibold">{{ log.username or 'System' }}</td>
+                                    <td class="small font-monospace">{{ log.ip_address }}</td>
+                                    <td class="small text-truncate" style="max-width: 200px;">{{ log.details }}</td>
+                                </tr>
+                            {% else %}
+                                <tr><td colspan="5" class="text-center py-3 text-muted">No security activity logged yet.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Login Attempts -->
+        <div class="col-lg-5">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0 fs-6 fw-bold text-dark"><i class="bi bi-fingerprint me-2 text-info"></i>Authentication Attempts</h5>
+                </div>
+                <div class="table-responsive">
+                    <table class="table custom-table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Timestamp</th>
+                                <th>Username</th>
+                                <th>IP</th>
+                                <th>Outcome</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for att in recent_logins %}
+                                <tr>
+                                    <td class="small text-muted">{{ att.timestamp.strftime('%H:%M:%S') }}</td>
+                                    <td class="small fw-semibold">{{ att.username }}</td>
+                                    <td class="small font-monospace">{{ att.ip_address }}</td>
+                                    <td>
+                                        {% if att.success %}
+                                            <span class="badge bg-success"><i class="bi bi-check-lg me-1"></i>Success</span>
+                                        {% else %}
+                                            <span class="badge bg-danger"><i class="bi bi-x-lg me-1"></i>Failed</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr><td colspan="4" class="text-center py-3 text-muted">No authentication attempts recorded yet.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

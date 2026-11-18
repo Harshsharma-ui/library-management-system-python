@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }} - SecureLib Admin{% endblock %}
+
+{% block content %}
+<div class="container py-3" style="max-width: 750px;">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h2 class="fw-bold mb-0">{{ title }}</h2>
+            <p class="text-muted small">Update book catalog information</p>
+        </div>
+        <a href="{{ url_for('admin.books') }}" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left me-1"></i> Back to Inventory
+        </a>
+    </div>
+
+    <div class="card form-card shadow-sm border-0">
+        <div class="card-body p-4 p-md-5">
+            <form method="POST" novalidate>
+                {{ form.csrf_token }}
+
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label for="title" class="form-label fw-semibold">Book Title *</label>
+                        {{ form.title(class="form-control" + (" is-invalid" if form.title.errors else ""), placeholder="e.g. Applied Cryptography and Network Security", id="title") }}
+                        {% for error in form.title.errors %}
+                            <div class="text-danger small mt-1">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="col-md-7">
+                        <label for="author" class="form-label fw-semibold">Author(s) *</label>
+                        {{ form.author(class="form-control" + (" is-invalid" if form.author.errors else ""), placeholder="e.g. William Stallings", id="author") }}
+                        {% for error in form.author.errors %}
+                            <div class="text-danger small mt-1">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="col-md-5">
+                        <label for="isbn" class="form-label fw-semibold">ISBN-10 / ISBN-13 *</label>
+                        {{ form.isbn(class="form-control" + (" is-invalid" if form.isbn.errors else ""), placeholder="e.g. 978-0134444284", id="isbn") }}
+                        {% for error in form.isbn.errors %}
+                            <div class="text-danger small mt-1">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="category" class="form-label fw-semibold">Discipline / Category *</label>
+                        {{ form.category(class="form-select" + (" is-invalid" if form.category.errors else ""), id="category") }}
+                        {% for error in form.category.errors %}
+                            <div class="text-danger small mt-1">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="col-md-3">
+                        <label for="total_copies" class="form-label fw-semibold">Total Copies *</label>
+                        {{ form.total_copies(class="form-control" + (" is-invalid" if form.total_copies.errors else ""), min=1, id="total_copies") }}
+                        {% for error in form.total_copies.errors %}
+                            <div class="text-danger small mt-1">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="col-md-3">
+                        <label for="shelf_location" class="form-label fw-semibold">Shelf Location</label>
+                        {{ form.shelf_location(class="form-control" + (" is-invalid" if form.shelf_location.errors else ""), placeholder="e.g. CS-R2-S3", id="shelf_location") }}
+                        {% for error in form.shelf_location.errors %}
+                            <div class="text-danger small mt-1">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="col-12">
+                        <label for="description" class="form-label fw-semibold">Book Synopsis / Overview</label>
+                        {{ form.description(class="form-control" + (" is-invalid" if form.description.errors else ""), rows=4, placeholder="Brief overview of topics covered...", id="description") }}
+                        {% for error in form.description.errors %}
+                            <div class="text-danger small mt-1">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+                    <a href="{{ url_for('admin.books') }}" class="btn btn-outline-secondary">Cancel</a>
+                    {{ form.submit(class="btn btn-primary px-4") }}
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

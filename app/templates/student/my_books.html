@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block title %}My Issued Books - SecureLib{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">My Active Books & Requests</h2>
+            <p class="text-muted small mb-0">Track your borrowed physical copies, upcoming return deadlines, and reservation statuses.</p>
+        </div>
+        <a href="{{ url_for('student.catalog') }}" class="btn btn-outline-primary btn-sm">
+            <i class="bi bi-plus-lg me-1"></i> Request Another Book
+        </a>
+    </div>
+
+    <!-- Active Loans Table -->
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+            <h5 class="mb-0 fs-6 fw-bold text-dark">
+                <i class="bi bi-book me-2 text-primary"></i>Currently Borrowed Books ({{ active_loans|length }})
+            </h5>
+            <span class="badge bg-primary">Borrow Limit: 3 Books</span>
+        </div>
+        <div class="table-responsive">
+            <table class="table custom-table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>Book Title & Details</th>
+                        <th>Category</th>
+                        <th>Shelf Location</th>
+                        <th>Issue Date</th>
+                        <th>Due Date</th>
+                        <th>Return Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for loan in active_loans %}
+                        <tr>
+                            <td>
+                                <div class="fw-bold text-dark">{{ loan.book.title }}</div>
+                                <div class="text-muted small">by {{ loan.book.author }} &bull; ISBN: {{ loan.book.isbn }}</div>
+                            </td>
+                            <td><span class="badge bg-secondary-subtle text-dark border">{{ loan.book.category }}</span></td>
+                            <td><span class="small text-muted"><i class="bi bi-geo-alt me-1"></i>{{ loan.book.shelf_location }}</span></td>
+                            <td class="small">{{ loan.issue_date.strftime('%d %b %Y') if loan.issue_date else '-' }}</td>
+                            <td class="small fw-semibold {% if loan.is_overdue %}text-danger{% endif %}">
+                                {{ loan.due_date.strftime('%d %b %Y') if loan.due_date else '-' }}
+                            </td>
+                            <td>
+                                {% if loan.is_overdue %}
+                                    <span class="badge bg-danger"><i class="bi bi-exclamation-triangle-fill me-1"></i>{{ loan.overdue_days }}d Overdue</span>
+                                    <div class="text-danger small fw-bold">Fine Accrued: ₹{{ loan.calculate_potential_fine() }}</div>
+                                {% else %}
+                                    {% set days_left = (loan.due_date - today).days if loan.due_date else 0 %}
+                                    {% if days_left <= 3 %}
+                                        <span class="badge bg-warning text-dark"><i class="bi bi-clock-history me-1"></i>{{ days_left }} days left</span>
+                                    {% else %}
+                                        <span class="badge bg-success-subtle text-success border border-success-subtle"><i class="bi bi-check-circle me-1"></i>{{ days_left }} days left</span>
+                                    {% endif %}
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center py-4 text-muted">
+                                You do not have any borrowed books at the moment.
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Pending Requests Table -->
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+            <h5 class="mb-0 fs-6 fw-bold text-dark">
+                <i class="bi bi-hourglass-split me-2 text-warning"></i>Pending Reservation Requests ({{ pending_requests|length }})
+            </h5>
+        </div>
+        <div class="table-responsive">
+            <table class="table custom-table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>Request ID</th>
+                        <th>Book Title</th>
+                        <th>ISBN</th>
+                        <th>Request Timestamp</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for req in pending_requests %}
+                        <tr>
+                            <td><span class="font-monospace small">#REQ-{{ req.id }}</span></td>
+                            <td>
+                                <div class="fw-bold">{{ req.book.title }}</div>
+                                <div class="text-muted small">by {{ req.book.author }}</div>
+                            </td>
+                            <td><span class="font-monospace small">{{ req.book.isbn }}</span></td>
+                            <td class="small text-muted">{{ req.created_at.strftime('%d %b %Y, %H:%M') }}</td>
+                            <td>
+                                <span class="badge bg-warning text-dark">
+                                    <i class="bi bi-hourglass me-1"></i> Pending Librarian Approval
+                                </span>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center py-4 text-muted">No pending book reservation requests.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

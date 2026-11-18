@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Fines - SecureLib Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">Overdue Penalty & Fine Management</h2>
+            <p class="text-muted small mb-0">Track automated late-return penalties and record fine settlements.</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="{{ url_for('admin.fines') }}" class="btn btn-outline-primary btn-sm">
+                <i class="bi bi-arrow-clockwise me-1"></i> Refresh / Sync Fines
+            </a>
+        </div>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-6">
+            <div class="stat-card border-danger">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="stat-number text-danger">₹{{ total_unpaid }}</div>
+                        <div class="stat-label">Total Unpaid Penalties</div>
+                    </div>
+                    <div class="icon-box bg-danger bg-opacity-10 text-danger">
+                        <i class="bi bi-exclamation-octagon-fill"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="stat-card border-success">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="stat-number text-success">₹{{ total_paid }}</div>
+                        <div class="stat-label">Total Settled / Collected</div>
+                    </div>
+                    <div class="icon-box bg-success bg-opacity-10 text-success">
+                        <i class="bi bi-cash-coin"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fines Table Card -->
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+            <div class="btn-group btn-group-sm">
+                <a href="{{ url_for('admin.fines') }}" class="btn {% if not status_filter %}btn-primary{% else %}btn-outline-primary{% endif %}">All</a>
+                <a href="{{ url_for('admin.fines', status='unpaid') }}" class="btn {% if status_filter == 'unpaid' %}btn-danger{% else %}btn-outline-danger{% endif %}">Unpaid</a>
+                <a href="{{ url_for('admin.fines', status='paid') }}" class="btn {% if status_filter == 'paid' %}btn-success{% else %}btn-outline-success{% endif %}">Paid</a>
+            </div>
+            <div class="w-25">
+                <input type="text" id="liveTableSearch" class="form-control form-control-sm" placeholder="Filter fines...">
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table custom-table table-hover mb-0" id="filterableTable">
+                <thead>
+                    <tr>
+                        <th>Fine ID</th>
+                        <th>Student</th>
+                        <th>Book Title</th>
+                        <th>Fine Amount</th>
+                        <th>Status</th>
+                        <th>Created Date</th>
+                        <th class="text-end">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for fine in fines %}
+                        <tr>
+                            <td><span class="font-monospace small">#FN-{{ fine.id }}</span></td>
+                            <td>
+                                <div class="fw-bold">{{ fine.user.full_name }}</div>
+                                <div class="text-muted small">Roll: {{ fine.user.roll_number }} &bull; @{{ fine.user.username }}</div>
+                            </td>
+                            <td>
+                                <div class="fw-semibold">{{ fine.issue_record.book.title }}</div>
+                                <div class="text-muted small">Due: {{ fine.issue_record.due_date.strftime('%d %b %Y') if fine.issue_record.due_date else '-' }}</div>
+                            </td>
+                            <td class="fw-bold fs-6 {% if fine.status == 'unpaid' %}text-danger{% else %}text-success{% endif %}">
+                                ₹{{ fine.amount }}
+                            </td>
+                            <td>
+                                {% if fine.status == 'unpaid' %}
+                                    <span class="badge bg-danger"><i class="bi bi-clock me-1"></i>Unpaid</span>
+                                {% else %}
+                                    <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Paid</span>
+                                    {% if fine.paid_date %}
+                                        <div class="small text-muted">{{ fine.paid_date.strftime('%d %b %Y') }}</div>
+                                    {% endif %}
+                                {% endif %}
+                            </td>
+                            <td class="small text-muted">{{ fine.created_at.strftime('%d %b %Y, %H:%M') }}</td>
+                            <td class="text-end">
+                                {% if fine.status == 'unpaid' %}
+                                    <form method="POST" action="{{ url_for('admin.mark_fine_paid', fine_id=fine.id) }}" class="d-inline">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                        <button type="submit" class="btn btn-sm btn-success">
+                                            <i class="bi bi-cash-stack me-1"></i> Record Payment
+                                        </button>
+                                    </form>
+                                {% else %}
+                                    <span class="badge bg-light text-muted border">Settled</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="7" class="text-center py-4 text-muted">No fine records found.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

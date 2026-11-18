@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Borrowing History - SecureLib{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">Borrowing History Archive</h2>
+            <p class="text-muted small mb-0">Record of all previously borrowed and returned books.</p>
+        </div>
+        <div class="w-25">
+            <input type="text" id="liveTableSearch" class="form-control form-control-sm" placeholder="Filter history...">
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="table-responsive">
+            <table class="table custom-table table-hover mb-0" id="filterableTable">
+                <thead>
+                    <tr>
+                        <th>Loan ID</th>
+                        <th>Book Title & Details</th>
+                        <th>Issue Date</th>
+                        <th>Due Date</th>
+                        <th>Return Date</th>
+                        <th>Final Status</th>
+                        <th>Associated Fine</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for record in past_records %}
+                        <tr>
+                            <td><span class="font-monospace small">#HIST-{{ record.id }}</span></td>
+                            <td>
+                                <div class="fw-bold">{{ record.book.title }}</div>
+                                <div class="text-muted small">by {{ record.book.author }} &bull; ISBN: {{ record.book.isbn }}</div>
+                            </td>
+                            <td class="small">{{ record.issue_date.strftime('%d %b %Y') if record.issue_date else '-' }}</td>
+                            <td class="small">{{ record.due_date.strftime('%d %b %Y') if record.due_date else '-' }}</td>
+                            <td class="small text-muted">{{ record.return_date.strftime('%d %b %Y') if record.return_date else '-' }}</td>
+                            <td>
+                                {% if record.status == 'returned' %}
+                                    <span class="badge bg-success-subtle text-success border border-success-subtle">
+                                        <i class="bi bi-check2-circle me-1"></i>Returned
+                                    </span>
+                                {% elif record.status == 'rejected' %}
+                                    <span class="badge bg-secondary-subtle text-secondary border">
+                                        <i class="bi bi-x-circle me-1"></i>Request Rejected
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if record.fine %}
+                                    <span class="fw-semibold {% if record.fine.status == 'paid' %}text-success{% else %}text-danger{% endif %}">
+                                        ₹{{ record.fine.amount }} ({{ record.fine.status|capitalize }})
+                                    </span>
+                                {% else %}
+                                    <span class="text-muted small">None (On Time)</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="7" class="text-center py-4 text-muted">No past borrowing history found.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

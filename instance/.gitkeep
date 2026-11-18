@@ -1,0 +1,1 @@
+# Keeps the instance directory tracked by git without committing sqlite db files
